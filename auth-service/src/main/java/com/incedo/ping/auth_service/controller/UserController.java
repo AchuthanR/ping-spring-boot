@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,13 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.incedo.ping.auth_service.dto.LoginResponseDto;
 import com.incedo.ping.auth_service.exception.ResourceAlreadyExistsException;
+import com.incedo.ping.auth_service.exception.ResourceNotFoundException;
 import com.incedo.ping.auth_service.model.LoginRequest;
 import com.incedo.ping.auth_service.model.User;
 import com.incedo.ping.auth_service.service.TokenService;
 import com.incedo.ping.auth_service.service.UserService;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/users")
 public class UserController {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
@@ -82,6 +82,17 @@ public class UserController {
         loginResponseDto.setAccessToken(token);
         
         return ResponseEntity.status(HttpStatus.OK).body(loginResponseDto);
+    }
+    
+    @PostMapping("/deactivate")
+    public ResponseEntity<?> deactivateUser(@RequestBody String username) {
+    	try {
+			userService.delete(username);
+		} catch (ResourceNotFoundException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+        
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 	
 }

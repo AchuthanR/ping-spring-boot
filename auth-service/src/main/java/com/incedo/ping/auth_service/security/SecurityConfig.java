@@ -69,8 +69,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .cors(Customizer.withDefaults())
 			.csrf(csrf -> csrf.disable())
 			.authorizeRequests(auth -> auth
-					.mvcMatchers("/api/users/login").permitAll()
-					.mvcMatchers("/api/users/register").permitAll()
+					.mvcMatchers("/users/login").permitAll()
+					.mvcMatchers("/users/register").permitAll()
 					.anyRequest().authenticated())
 			.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));			
