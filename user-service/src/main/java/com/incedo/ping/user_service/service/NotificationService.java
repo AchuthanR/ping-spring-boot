@@ -23,12 +23,12 @@ public class NotificationService {
 	@Autowired
 	private NotificationStatusRepository notificationStatusRepository;
 	
-	public List<Notification> getAll() {
-		return notificationRepository.findAll();
+	public List<Notification> getAll(String username) {
+		return notificationRepository.findAllByUserUsername(username);
 	}
 	
-	public Notification getOne(int id) throws ResourceNotFoundException {
-		Optional<Notification> notificationFound = notificationRepository.findById(id);
+	public Notification getOne(int id, String username) throws ResourceNotFoundException {
+		Optional<Notification> notificationFound = notificationRepository.findByIdAndUserUsername(id, username);
 		if (notificationFound.isEmpty()) {
 			throw new ResourceNotFoundException("Notification not found");
 		}
