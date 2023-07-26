@@ -12,6 +12,9 @@ public interface NotificationRepository extends JpaRepository<Notification, Inte
 
 	@Query("select n from Notification n where n.recipient.username=?1")
 	List<Notification> findAllByUserUsername(String username);
+	
+	@Query("select n from Notification n where n.recipient.username=?1 and n.id>?2")
+	List<Notification> findAllByUserUsernameAfterNotificationId(String username, int afterNotificationId);
 
 	@Query("select n from Notification n where n.id=?1 and n.recipient.username=?2")
 	Optional<Notification> findByIdAndUserUsername(int id, String username);

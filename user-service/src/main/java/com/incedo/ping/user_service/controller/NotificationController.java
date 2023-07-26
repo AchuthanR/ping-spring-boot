@@ -33,6 +33,12 @@ public class NotificationController {
 		return notificationService.getAll(username);
 	}
 	
+	@GetMapping("/after/{id}")
+	public List<Notification> getAllNotification(@PathVariable int id, @AuthenticationPrincipal Jwt jwt) {
+		String username = jwt.getSubject();
+		return notificationService.getAllAfterNotificationId(username, id);
+	}
+	
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getNotification(@PathVariable int id, @AuthenticationPrincipal Jwt jwt) {
 		String username = jwt.getSubject();

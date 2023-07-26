@@ -27,6 +27,10 @@ public class NotificationService {
 		return notificationRepository.findAllByUserUsername(username);
 	}
 	
+	public List<Notification> getAllAfterNotificationId(String username, int id) {
+		return notificationRepository.findAllByUserUsernameAfterNotificationId(username, id);
+	}
+	
 	public Notification getOne(int id, String username) throws ResourceNotFoundException {
 		Optional<Notification> notificationFound = notificationRepository.findByIdAndUserUsername(id, username);
 		if (notificationFound.isEmpty()) {
