@@ -26,7 +26,7 @@ public class UserService implements UserDetailsService {
 	
 	@Override
 	public User loadUserByUsername(String username) throws UsernameNotFoundException {
-		return userRepository.findUserByUsername(username);
+		return userRepository.findUserByUsernameAndIsActive(username, true);
 	}
 	
 	public List<User> getAll(boolean includeInactiveUsers) {

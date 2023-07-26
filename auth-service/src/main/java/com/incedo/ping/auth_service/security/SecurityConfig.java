@@ -15,7 +15,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,9 +22,6 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import org.springframework.security.provisioning.UserDetailsManager;
-import org.springframework.security.web.SecurityFilterChain;
 
 import com.incedo.ping.auth_service.service.UserService;
 import com.nimbusds.jose.JOSEException;
@@ -41,7 +37,11 @@ import com.nimbusds.jose.proc.SecurityContext;
 @EnableMethodSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
-	private RSAKey rsaKey;
+	private RsaKeyProperties rsaKeyProperties;
+	
+	public SecurityConfig(RsaKeyProperties rsaKeyProperties) {
+		this.rsaKeyProperties = rsaKeyProperties;
+	}
 	
 	@Autowired
 	private UserService userService;
@@ -82,20 +82,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 	
 	@Bean
-    public JWKSource<SecurityContext> jwkSource() {
-        rsaKey = Jwks.generateRsa();
-        JWKSet jwkSet = new JWKSet(rsaKey);
-        return (jwkSelector, securityContext) -> jwkSelector.select(jwkSet);
-    }
-	
-	@Bean
-	JwtEncoder jwtEncoder(JWKSource<SecurityContext> jwks) {
+	JwtEncoder jwtEncoder() {
+		JWK jwk = new RSAKey.Builder(rsaKeyProperties.publicKey()).privateKey(rsaKeyProperties.privateKey()).build();
+		JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
 		return new NimbusJwtEncoder(jwks);
 	}
 	
 	@Bean
-	JwtDecoder jwtDecoder() throws JOSEException {
-		return NimbusJwtDecoder.withPublicKey(rsaKey.toRSAPublicKey()).build();
+	JwtDecoder jwtDecoder() {
+		return NimbusJwtDecoder.withPublicKey(rsaKeyProperties.publicKey()).build();
 	}
 	
 }

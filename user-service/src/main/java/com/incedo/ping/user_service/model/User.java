@@ -15,6 +15,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,6 +34,7 @@ public class User implements UserDetails {
 
 	@Column(unique = true)
 	private String username;
+	@JsonIgnore
 	private String password;
 	private String role;
 	private LocalDateTime createdAt;
@@ -39,6 +42,7 @@ public class User implements UserDetails {
 	@Column(columnDefinition = "boolean DEFAULT TRUE")
 	private boolean isActive;
 
+	@JsonIgnore
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		SimpleGrantedAuthority sga = new SimpleGrantedAuthority(role);
@@ -47,21 +51,25 @@ public class User implements UserDetails {
 		return list;
 	}
 
+	@JsonIgnore
 	@Override
 	public boolean isAccountNonExpired() {
 		return true;
 	}
 
+	@JsonIgnore
 	@Override
 	public boolean isAccountNonLocked() {
 		return true;
 	}
 
+	@JsonIgnore
 	@Override
 	public boolean isCredentialsNonExpired() {
 		return true;
 	}
 
+	@JsonIgnore
 	@Override
 	public boolean isEnabled() {
 		return true;
