@@ -1,5 +1,7 @@
 # Dynamic notifications system using Spring Boot
 
+This system is used to create notification templates and use them to send personalized notifications to a group of users. Details abouts the users like username, firstname, lastname, email etc. can be used in the notification content for personalization. SUPERADMIN, ADMIN and USER are the roles available. Users can only access their notifications. Authentication and authorization are done using jwt tokens.
+
 Details about the microservices:
 * gateway - Microservice that acts as an API gateway and routes requests to other microservices using their names
 * service-discovery - Eureka server to discover and monitor other microservices
@@ -18,9 +20,13 @@ Steps for local setup:
 8. Most of the APIs are protected. So, use the "/auth-service/users/register" endpoint to register an user and use the "/auth-service/users/login" endpoint to get the jwt token to be used with all the protected requests.
 
 API example:
-Endpoint: /admin-service/notification/group
-Payload: 
-{
+<br>
+<br>
+Endpoint: `/admin-service/notification/group`
+<br>
+Payload:
+<br> 
+`{
     "notification": {
         "title": "Account password about to be expired!",
         "content": "According to our password policy, passwords should be changed every 60 days. Your account password is about to be expired. We request you to change it immediately for safety purposes.",
@@ -33,9 +39,11 @@ Payload:
         }
     },
     "userIds": [2, 3]
-}
+}`
+<br>
 Response:
-[
+<br>
+`[
     {
         "id": 1,
         "title": "Account password about to be expired!",
@@ -82,4 +90,4 @@ Response:
         },
         "readTimestamp": null
     }
-]
+]`
