@@ -22,6 +22,22 @@ public class Notification {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
+	public Notification() {
+		
+	}
+	
+	public Notification(Notification notification) {
+		super();
+		this.id = notification.getId();
+		this.title = notification.getTitle();
+		this.content = notification.getContent();
+		this.timestamp = notification.getTimestamp();
+		this.status = notification.getStatus();
+		this.recipient = notification.getRecipient();
+		this.category = notification.getCategory();
+		this.readTimestamp = notification.getReadTimestamp();
+	}
+	
 	private String title;
 	private String content;
 	private LocalDateTime timestamp;

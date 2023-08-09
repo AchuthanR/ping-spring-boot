@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.incedo.ping.auth_service.dto.LoginResponseDto;
 import com.incedo.ping.auth_service.exception.ResourceAlreadyExistsException;
 import com.incedo.ping.auth_service.exception.ResourceNotFoundException;
+import com.incedo.ping.auth_service.helper.EmailValidator;
 import com.incedo.ping.auth_service.model.LoginRequest;
 import com.incedo.ping.auth_service.model.User;
 import com.incedo.ping.auth_service.service.TokenService;
@@ -59,15 +61,22 @@ public class UserController {
         LoginResponseDto loginResponseDto = new LoginResponseDto();
         loginResponseDto.setUsername(user.getUsername());
         loginResponseDto.setRole(user.getRole());
+        loginResponseDto.setEmail(user.getEmail());
+        loginResponseDto.setFirstName(user.getFirstName());
+        loginResponseDto.setLastName(user.getLastName());
         loginResponseDto.setAccessToken(token);
         
         return ResponseEntity.status(HttpStatus.OK).body(loginResponseDto);
     }
     
     @PostMapping("/register")
-    public ResponseEntity<?> registerWithUsernameAndPassword(@RequestBody User user) {
+    public ResponseEntity<?> registerUserWithUsernameAndPassword(@RequestBody User user) {
+    	if (!EmailValidator.isValid(user.getEmail())) {
+    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email given is not valid");
+    	}
+    	
     	try {
-			userService.insert(user);
+			user = userService.insert(user, false);
 		} catch (ResourceAlreadyExistsException e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
@@ -79,6 +88,36 @@ public class UserController {
         LoginResponseDto loginResponseDto = new LoginResponseDto();
         loginResponseDto.setUsername(user.getUsername());
         loginResponseDto.setRole(user.getRole());
+        loginResponseDto.setEmail(user.getEmail());
+        loginResponseDto.setFirstName(user.getFirstName());
+        loginResponseDto.setLastName(user.getLastName());
+        loginResponseDto.setAccessToken(token);
+        
+        return ResponseEntity.status(HttpStatus.OK).body(loginResponseDto);
+    }
+    
+    @PostMapping("/admin/register")
+    public ResponseEntity<?> registerAdminWithUsernameAndPassword(@RequestBody User user) {
+    	if (!EmailValidator.isValid(user.getEmail())) {
+    		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email given is not valid");
+    	}
+    	
+    	try {
+			user = userService.insert(user, true);
+		} catch (ResourceAlreadyExistsException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+    	
+    	Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+        String token = tokenService.generateToken(authentication);
+        LOG.info("Token has been generated for username={}", user.getUsername());
+        
+        LoginResponseDto loginResponseDto = new LoginResponseDto();
+        loginResponseDto.setUsername(user.getUsername());
+        loginResponseDto.setRole(user.getRole());
+        loginResponseDto.setEmail(user.getEmail());
+        loginResponseDto.setFirstName(user.getFirstName());
+        loginResponseDto.setLastName(user.getLastName());
         loginResponseDto.setAccessToken(token);
         
         return ResponseEntity.status(HttpStatus.OK).body(loginResponseDto);

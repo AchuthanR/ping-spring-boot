@@ -42,7 +42,7 @@ public class UserService implements UserDetailsService {
 		return userRepository.findUserByUsernameAndIsActive(username, true);
 	}
 	
-	public User insert(User user) throws ResourceAlreadyExistsException {
+	public User insert(User user, boolean isAdmin) throws ResourceAlreadyExistsException {
 		User userFound = userRepository.findUserByUsername(user.getUsername());
 		if (userFound != null) {
 			throw new ResourceAlreadyExistsException("Username is already in use");
@@ -51,7 +51,12 @@ public class UserService implements UserDetailsService {
 		user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
 		user.setCreatedAt(LocalDateTime.now());
 		user.setModifiedAt(LocalDateTime.now());
-		user.setRole("USER");
+		if (isAdmin) {
+			user.setRole("ADMIN");
+		}
+		else {
+			user.setRole("USER");
+		}
 		user.setActive(true);
 		User saved = userRepository.save(user);
 		LOG.info("New user with username {} has been created", user.getUsername());

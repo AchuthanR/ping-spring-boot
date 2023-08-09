@@ -71,7 +71,7 @@ public class NotificationService {
 		List<Notification> notifications = new ArrayList<>();
 		
 		for (Integer userId : groupNotification.getUserIds()) {
-			Notification notification = groupNotification.getNotification();
+			Notification notification = new Notification(groupNotification.getNotification());
 			
 			Optional<NotificationStatus> notificationStatusFound = notificationStatusRepository.findById(notification.getStatus().getId());
 			if (notificationStatusFound.isEmpty()) {

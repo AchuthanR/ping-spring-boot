@@ -21,7 +21,7 @@ import com.incedo.ping.user_service.model.NotificationStatusUpdate;
 import com.incedo.ping.user_service.service.NotificationService;
 
 @RestController
-@RequestMapping("/notification")
+@RequestMapping("/notifications")
 public class NotificationController {
 	
 	@Autowired
