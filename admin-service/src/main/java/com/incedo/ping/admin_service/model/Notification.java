@@ -38,6 +38,13 @@ public class Notification {
 		this.readTimestamp = notification.getReadTimestamp();
 	}
 	
+	public Notification(NotificationTemplate notificationTemplate) {
+		super();
+		this.title = notificationTemplate.getTitle();
+		this.content = notificationTemplate.getContent();
+		this.category = notificationTemplate.getCategory();
+	}
+	
 	private String title;
 	private String content;
 	private LocalDateTime timestamp;

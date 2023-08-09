@@ -58,6 +58,24 @@ public class NotificationController {
 		}
 	}
 	
+	@PostMapping("/fromTemplate/{id}")
+	public ResponseEntity<?> postNotificationFromTemplate(@PathVariable int id, @RequestBody Notification notification) {
+		try {
+			return ResponseEntity.status(HttpStatus.OK).body(notificationService.insertFromTemplate(id, notification));
+		} catch (ResourceNotFoundException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+	
+	@PostMapping("/group/fromTemplate/{id}")
+	public ResponseEntity<?> postGroupNotificationFromTemplate(@PathVariable int id, @RequestBody GroupNotification groupNotification) {
+		try {
+			return ResponseEntity.status(HttpStatus.OK).body(notificationService.multipleInsertFromTemplate(id, groupNotification));
+		} catch (ResourceNotFoundException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+	
 	@PutMapping("/{id}")
 	public ResponseEntity<?> putNotification(@PathVariable int id, @RequestBody Notification notification) {
 		try {
