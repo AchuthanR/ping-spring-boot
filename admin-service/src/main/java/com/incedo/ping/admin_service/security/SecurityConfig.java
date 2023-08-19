@@ -44,7 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Bean
     public JwtDecoder jwtDecoder() {
-        RSAPublicKey publicKey = rsaKeyProperties.publicKey();
+        RSAPublicKey publicKey = rsaKeyProperties.getPublicKey();
         return NimbusJwtDecoder.withPublicKey(publicKey).build();
     }
 	

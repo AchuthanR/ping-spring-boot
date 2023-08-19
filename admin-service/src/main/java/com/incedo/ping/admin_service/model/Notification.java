@@ -9,22 +9,22 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "notifications")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Notification {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	
-	public Notification() {
-		
-	}
 	
 	public Notification(Notification notification) {
 		super();
